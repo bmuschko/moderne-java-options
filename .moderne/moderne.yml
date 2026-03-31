@@ -1,5 +1,4 @@
 specs: specs.moderne.ai/v1/cli
-gradle:
-  build:
-    jvmArgs:
-      - -XX:+UseParallelGC
+java:
+  options:
+    - -XX:+UseParallelGC
