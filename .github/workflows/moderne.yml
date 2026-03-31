@@ -1,0 +1,32 @@
+name: Moderne CLI Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  moderne-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Download Moderne CLI and set mod alias
+        run: |
+          curl -sSL https://repo1.maven.org/maven2/io/moderne/moderne-cli/4.0.10/moderne-cli-4.0.10.jar -o "$HOME/moderne-cli.jar"
+          echo '#!/usr/bin/env bash' > "$HOME/mod"
+          echo 'java -jar "$HOME/moderne-cli.jar" "$@"' >> "$HOME/mod"
+          chmod +x "$HOME/mod"
+          echo "$HOME" >> "$GITHUB_PATH"
+
+      - name: Run Moderne build
+        run: mod build . --no-download
